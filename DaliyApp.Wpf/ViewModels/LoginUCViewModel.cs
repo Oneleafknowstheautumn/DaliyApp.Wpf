@@ -69,6 +69,7 @@ namespace DaliyApp.Wpf.ViewModels
 
         private void RegFuc()
         {
+            string s = accountInfoDTO.UserNo;
             ///验证用户信息
             if (string.IsNullOrEmpty(accountInfoDTO.UserNname) || string.IsNullOrEmpty(accountInfoDTO.Password)
                 || string.IsNullOrEmpty(accountInfoDTO.ConfirmPassword))
@@ -84,7 +85,7 @@ namespace DaliyApp.Wpf.ViewModels
             }
             //发送请求
             ApiRequest apiRequest = new ApiRequest();
-            apiRequest.Route = "/Account/Reg";
+            apiRequest.Route = "Account/RegUser";
             apiRequest.Method = RestSharp.Method.POST;
             apiRequest.Parameters = accountInfoDTO;
             //执行请求
