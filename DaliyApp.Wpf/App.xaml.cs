@@ -1,5 +1,6 @@
 ﻿using DaliyApp.Wpf.HttpClients;
 using DaliyApp.Wpf.ViewModels;
+using DaliyApp.Wpf.ViewModels.Dialogs;
 using DaliyApp.Wpf.Views;
 using DryIoc;
 using Prism.DryIoc;
@@ -37,6 +38,17 @@ namespace DaliyApp.Wpf
 
             //api请求
             containerRegistry.GetContainer().Register<HttpRestClient>(made: Parameters.Of.Type<string>(serviceKey: "weburl"));
+
+            //注册区域导航
+            containerRegistry.RegisterForNavigation<HomeUC, HomeUCViewModel>();
+            containerRegistry.RegisterForNavigation<WaitUC, WaitUCViewModel>();
+            containerRegistry.RegisterForNavigation<MemorandumUC, MemorandumUCViewModel>();
+            containerRegistry.RegisterForNavigation<SettingUC, SettingUCViewModel>();
+
+            containerRegistry.RegisterForNavigation<PersonalUC, PersonalUCViewModel>();
+
+            //注册对话框
+            containerRegistry.RegisterForNavigation<AddWaitUC, AddWaitUCViewModel>();
         }
 
         /// <summary>
@@ -53,6 +65,16 @@ namespace DaliyApp.Wpf
                 {
                     Environment.Exit(0);
                     return;
+                }
+                var MainVm = Current.MainWindow.DataContext as MainWinViewModel;
+                if (MainVm != null)
+                {
+                    if (callback.Parameters.ContainsKey("LoginName"))
+                    {
+                        string name = callback.Parameters.GetValue<string>("LoginName");//回调key值
+
+                        MainVm.SetDefaNav(name); //登陆默认首页
+                    }
                 }
                 base.OnInitialized();
             });

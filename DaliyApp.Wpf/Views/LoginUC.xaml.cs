@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DaliyApp.Wpf.MsgEvents;
+using Prism.Events;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +22,24 @@ namespace DaliyApp.Wpf.Views
     /// </summary>
     public partial class LoginUC : UserControl
     {
-        public LoginUC()
+        private readonly IEventAggregator _eventAggregator;
+
+        public LoginUC(IEventAggregator eventAggregator)
         {
             InitializeComponent();
+            //消息订阅
+            _eventAggregator = eventAggregator;
+            //
+            _eventAggregator.GetEvent<MsgEvent>().Subscribe(MsgEventReceived);
+        }
+
+        /// <summary>
+        /// 消息订阅
+        /// </summary>
+        /// <param name="obj">接收订阅的消息</param>
+        private void MsgEventReceived(string obj)
+        {
+            RegUserMeg.MessageQueue.Enqueue(obj);
         }
     }
 }

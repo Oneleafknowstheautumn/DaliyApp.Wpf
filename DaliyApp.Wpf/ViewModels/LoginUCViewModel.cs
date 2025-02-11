@@ -1,6 +1,10 @@
 ﻿using DaliyApp.Wpf.DTOs;
 using DaliyApp.Wpf.HttpClients;
+using DaliyApp.Wpf.MsgEvents;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
@@ -19,13 +23,15 @@ namespace DaliyApp.Wpf.ViewModels
     public class LoginUCViewModel : BindableBase, IDialogAware
     {
         public readonly HttpRestClient _httpRest;
+
+        public readonly IEventAggregator _eventAggregator;
         public string Title { get; set; } = "我的日常";
 
         public event Action<IDialogResult> RequestClose;
 
         public DelegateCommand LoginCmmmand { get; set; }
 
-        public LoginUCViewModel(HttpRestClient httpRest)
+        public LoginUCViewModel(HttpRestClient httpRest, IEventAggregator eventAggregator)
         {
             //登陆页面
             LoginCmmmand = new DelegateCommand(LginFuc);
@@ -38,17 +44,68 @@ namespace DaliyApp.Wpf.ViewModels
             //初始化
             accountInfoDTO = new AccountInfoDTO();
 
+            //http请求
             _httpRest = httpRest;
+
+            _eventAggregator = eventAggregator;
         }
 
+        #region 登陆实现
+
+        /// <summary>
+        /// 账号密码
+        /// </summary>
+        private string _userno;
+
+        public string userno
+        {
+            get { return _userno; }
+            set { _userno = value; }
+        }
+
+        private string _pwd;
+
+        public string pwd
+        {
+            get { return _pwd; }
+            set { _pwd = value; }
+        }
+
+        /// <summary>
+        /// 登陆方法验证
+        /// </summary>
         private void LginFuc()
         {
-            string result = pwd;
-            if (RequestClose != null)
+            //验证用户信息
+            if (string.IsNullOrEmpty(userno) || string.IsNullOrEmpty(pwd))
             {
-                RequestClose(new DialogResult(ButtonResult.OK));
+                _eventAggregator.GetEvent<MsgEvent>().Publish("用户信息不全");
+                return;
+            }
+            ApiRequest apiRequest = new ApiRequest();
+            apiRequest.Route = $"Account/LoginResult?userno={userno}&password={pwd}";
+            apiRequest.Method = RestSharp.Method.GET;
+            //执行请求
+            ApiReponses apiReponses = _httpRest.Excute(apiRequest);
+            if (apiReponses.ResultCode == 1)
+            {
+                if (RequestClose != null)
+                {
+                    //Json反序列画
+                    AccountInfoDTO accountInfoDTO = JsonConvert.DeserializeObject<AccountInfoDTO>(apiReponses.ResultData.ToString());
+                    DialogParameters pars = new DialogParameters();
+                    //获取登陆名
+                    pars.Add("LoginName", accountInfoDTO.UserNname);
+                    RequestClose(new DialogResult(ButtonResult.OK, pars));
+                }
+            }
+            else
+            {
+                _eventAggregator.GetEvent<MsgEvent>().Publish(apiReponses.Message);
             }
         }
+
+        #endregion 登陆实现
 
         public bool CanCloseDialog()
         {
@@ -69,18 +126,19 @@ namespace DaliyApp.Wpf.ViewModels
 
         private void RegFuc()
         {
-            string s = accountInfoDTO.UserNo;
             ///验证用户信息
             if (string.IsNullOrEmpty(accountInfoDTO.UserNname) || string.IsNullOrEmpty(accountInfoDTO.Password)
                 || string.IsNullOrEmpty(accountInfoDTO.ConfirmPassword))
             {
-                MessageBox.Show("用户信息不全");
+                _eventAggregator.GetEvent<MsgEvent>().Publish("用户信息不全");
+                //MessageBox.Show("用户信息不全");
                 return;
             }
 
             if (accountInfoDTO.Password != accountInfoDTO.ConfirmPassword)
             {
-                MessageBox.Show("两次密码不一致");
+                _eventAggregator.GetEvent<MsgEvent>().Publish("两次密码不一致");
+                //MessageBox.Show("两次密码不一致");
                 return;
             }
             //发送请求
@@ -92,12 +150,13 @@ namespace DaliyApp.Wpf.ViewModels
             ApiReponses apiReponses = _httpRest.Excute(apiRequest);
             if (apiReponses.ResultCode == 1)
             {
-                MessageBox.Show(apiReponses.Message);
+                _eventAggregator.GetEvent<MsgEvent>().Publish(apiReponses.Message);
+                //MessageBox.Show(apiReponses.Message);
                 selectedindex = 0;
             }
             else
             {
-                MessageBox.Show(apiReponses.Message);
+                _eventAggregator.GetEvent<MsgEvent>().Publish(apiReponses.Message);
             }
         }
 
@@ -140,13 +199,5 @@ namespace DaliyApp.Wpf.ViewModels
         }
 
         #endregion 显示登陆索引
-
-        private string _pwd;
-
-        public string pwd
-        {
-            get { return _pwd; }
-            set { _pwd = value; }
-        }
     }
 }
