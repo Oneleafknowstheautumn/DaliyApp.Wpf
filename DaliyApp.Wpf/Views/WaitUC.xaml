@@ -57,12 +57,17 @@
                     <TextBox
                         VerticalAlignment="Center"
                         md:HintAssist.Hint="查找待办事项     "
-                        md:TextFieldAssist.HasClearButton="True" />
+                        md:TextFieldAssist.HasClearButton="True"
+                        Text="{Binding searchTitle, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Return" Command="{Binding queryWaitListCmm}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
                     <TextBlock
                         Margin="10,0"
                         VerticalAlignment="Center"
                         Text="筛选:" />
-                    <ComboBox SelectedIndex="0">
+                    <ComboBox SelectedIndex="{Binding selectIndex}">
                         <ComboBoxItem Content="全部" />
                         <ComboBoxItem Content="已完成" />
                         <ComboBoxItem Content="未完成" />
@@ -100,7 +105,7 @@
 
                                     <Border
                                         Grid.RowSpan="2"
-                                        Background="MediumSeaGreen"
+                                        Background="{Binding BackColor}"
                                         CornerRadius="5" />
                                     <!--  画布  -->
                                     <Canvas Grid.RowSpan="2" ClipToBounds="True">
@@ -135,7 +140,7 @@
                                     <TextBlock
                                         Grid.Row="1"
                                         Margin="10,5"
-                                        Text="{Binding Content}" />
+                                        Text="{Binding Contene}" />
                                 </Grid>
                             </md:TransitioningContent>
                         </DataTemplate>

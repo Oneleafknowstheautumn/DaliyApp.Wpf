@@ -35,5 +35,20 @@ namespace DaliyApp.Wpf.Models
 
         //视图名
         public string ViewName { get; set; }
+
+        public string Hand
+        {
+            get
+            {
+                if (ItemName == "比例")
+                {
+                    return "";
+                }
+                else
+                {
+                    return "Hand";
+                }
+            }
+        }
     }
 }

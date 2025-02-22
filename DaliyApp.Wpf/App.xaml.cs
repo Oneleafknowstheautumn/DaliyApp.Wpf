@@ -1,7 +1,9 @@
 ﻿using DaliyApp.Wpf.HttpClients;
+using DaliyApp.Wpf.Service;
 using DaliyApp.Wpf.ViewModels;
 using DaliyApp.Wpf.ViewModels.Dialogs;
 using DaliyApp.Wpf.Views;
+using DaliyApp.Wpf.Views.Dialogs;
 using DryIoc;
 using Prism.DryIoc;
 using Prism.Ioc;
@@ -49,6 +51,10 @@ namespace DaliyApp.Wpf
 
             //注册对话框
             containerRegistry.RegisterForNavigation<AddWaitUC, AddWaitUCViewModel>();
+            containerRegistry.Register<DialogHostService>();
+            containerRegistry.RegisterForNavigation<EditWaitUC, EditWaitUCViewModel>();
+            containerRegistry.RegisterForNavigation<AddMemorandumUC, AddMemorandumUCViewModel>();
+            containerRegistry.RegisterForNavigation<EditMemorandumUC, EditMemorandumUCViewModel>();
         }
 
         /// <summary>

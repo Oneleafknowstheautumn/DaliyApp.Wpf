@@ -1,4 +1,5 @@
 ﻿using DaliyApp.Wpf.DTOs;
+using DaliyApp.Wpf.HttpClients;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -11,11 +12,16 @@ namespace DaliyApp.Wpf.ViewModels
 {
     public class MemorandumUCViewModel : BindableBase
     {
-        public MemorandumUCViewModel()
+        public readonly HttpRestClient _httpClients;
+
+        public MemorandumUCViewModel(HttpRestClient httpRestClient)
         {
+            _httpClients = httpRestClient;
             memorandumlist = new List<MemorandumInfoDTO>();
-            memorandumFunc();
+
             memorandCmm = new DelegateCommand(AddMemorandFunc);
+            searchCmm = new DelegateCommand(memorandumFunc);
+            memorandumFunc();
         }
 
         private List<MemorandumInfoDTO> _memorandumlist;
@@ -30,38 +36,34 @@ namespace DaliyApp.Wpf.ViewModels
             }
         }
 
+        public DelegateCommand searchCmm { get; set; }
+        public string searchTitle { get; set; }
+        public int selectedIndex { get; set; }
+
         private void memorandumFunc()
         {
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "12312312312312312", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "12312312312312312", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "12312312312312312", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "12312312312312312", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "12312312312312312", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "12312312312312312", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "12312312312312312", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "12312312312312312", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "12312312312312312", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "12312312312312312", Status = 1 });
-            memorandumlist.Add(new MemorandumInfoDTO { Tittle = "马喽日常", Content = "测试", Status = 1 });
+            int? stu = null;
+            if (selectedIndex == 1)
+            {
+                stu = 0;
+            }
+            if (selectedIndex == 2)
+            {
+                stu = 1;
+            }
+            ApiRequest request = new ApiRequest();
+            request.Method = RestSharp.Method.GET;
+            request.Route = $"Memorandum/SearchMemorandum?{searchTitle}&&{stu}";
+            ApiReponses apiReponses = _httpClients.Excute(request);
+            if (apiReponses.ResultCode == 1)
+            {
+                //将json字符串转换为对象
+                memorandumlist = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MemorandumInfoDTO>>(apiReponses.ResultData.ToString());
+            }
+            else
+            {
+                memorandumlist = new List<MemorandumInfoDTO>();
+            }
         }
 
         private bool _isAddMemorand;

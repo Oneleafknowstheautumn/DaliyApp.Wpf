@@ -11,7 +11,7 @@ namespace DaliyApp.Wpf.DTOs
     public class WaitInfoDTO
     {
         //id
-        public int Id { get; set; }
+        public int WaitId { get; set; }
 
         //标题
         public string Tittle { get; set; }
@@ -21,5 +21,13 @@ namespace DaliyApp.Wpf.DTOs
 
         //是否完成
         public int Status { get; set; }
+
+        public string BackColor
+        {
+            get
+            {
+                return Status == 0 ? "#1E90FF" : "#3CB371";
+            }
+        }
     }
 }

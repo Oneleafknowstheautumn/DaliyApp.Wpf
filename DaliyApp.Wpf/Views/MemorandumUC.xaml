@@ -58,12 +58,17 @@
                         <TextBox
                             VerticalAlignment="Center"
                             md:HintAssist.Hint="查找备忘录     "
-                            md:TextFieldAssist.HasClearButton="True" />
+                            md:TextFieldAssist.HasClearButton="True"
+                            Text="{Binding searchTitle, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Enter" Command="{Binding searchCmm}" />
+                            </TextBox.InputBindings>
+                        </TextBox>
                         <TextBlock
                             Margin="10,0"
                             VerticalAlignment="Center"
                             Text="筛选:" />
-                        <ComboBox SelectedIndex="0">
+                        <ComboBox SelectedIndex="{Binding selectedIndex}">
                             <ComboBoxItem Content="全部" />
                             <ComboBoxItem Content="已完成" />
                             <ComboBoxItem Content="未完成" />

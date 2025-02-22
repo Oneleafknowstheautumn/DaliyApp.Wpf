@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 ///添加待办事项
-namespace DaliyApp.Wpf.ViewModels
+namespace DaliyApp.Wpf.ViewModels.Dialogs
 {
     public class AddWaitUCViewModel : IDialogHostService
     {

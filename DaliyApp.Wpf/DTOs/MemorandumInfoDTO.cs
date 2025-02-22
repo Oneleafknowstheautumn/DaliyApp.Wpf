@@ -9,10 +9,10 @@ namespace DaliyApp.Wpf.DTOs
     public class MemorandumInfoDTO
     {
         //id
-        public int Id { get; set; }
+        public int MemorandumID { get; set; }
 
         //标题
-        public string Tittle { get; set; }
+        public string Title { get; set; }
 
         //内容
         public string Content { get; set; }

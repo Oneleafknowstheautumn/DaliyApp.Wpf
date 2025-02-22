@@ -19,10 +19,7 @@
     <WindowChrome.WindowChrome>
         <WindowChrome GlassFrameThickness="-1" />
     </WindowChrome.WindowChrome>
-    <materialDesign:DialogHost
-        DialogTheme="Inherit"
-        Identifier="RootDialog"
-        SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
+    <materialDesign:DialogHost DialogTheme="Inherit" Identifier="RootDialog">
 
         <materialDesign:DrawerHost x:Name="DrawerHost" IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <materialDesign:DrawerHost.LeftDrawerContent>
@@ -86,18 +83,37 @@
                             <Button
                                 x:Name="btnMin"
                                 Click="btnMin_Click"
-                                Content="-"
-                                Style="{StaticResource MaterialDesignFlatMidBgButton}" />
+                                Style="{StaticResource MaterialDesignFlatMidBgButton}">
+                                <Button.Content>
+                                    <Image
+                                        Width="20"
+                                        Height="30"
+                                        Cursor=""
+                                        Source="/Images/min.png" />
+                                </Button.Content>
+                            </Button>
                             <Button
                                 x:Name="btnMax"
                                 Click="btnMax_Click"
-                                Content="123"
-                                Style="{StaticResource MaterialDesignFlatMidBgButton}" />
+                                Style="{StaticResource MaterialDesignFlatMidBgButton}">
+                                <Button.Content>
+                                    <Image
+                                        Width="20"
+                                        Height="25"
+                                        Source="/Images/max.png" />
+                                </Button.Content>
+                            </Button>
                             <Button
                                 x:Name="exit"
                                 Click="btnExit_Click"
-                                Content="3"
-                                Style="{StaticResource MaterialDesignFlatMidBgButton}" />
+                                Style="{StaticResource MaterialDesignFlatMidBgButton}">
+                                <Button.Content>
+                                    <Image
+                                        Width="20"
+                                        Height="30"
+                                        Source="/Images/exit.png" />
+                                </Button.Content>
+                            </Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <ToggleButton
@@ -145,7 +161,7 @@
                                 VerticalAlignment="Center"
                                 AutomationProperties.Name="Material Design In XAML Toolkit"
                                 FontSize="22"
-                                Text="我的日常" />
+                                Text="马喽记事本" />
                         </StackPanel>
                     </DockPanel>
                 </materialDesign:ColorZone>
